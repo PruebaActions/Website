@@ -29,7 +29,7 @@ jobs:
             "image_name": "website-pr",
             "container_name": "website-pr-container",
             "dockerfile": "./Website/Dockerfile",
-            "container_port": "80",
+            "container_port": "8080",
             "isFramework": "false"
           }
         ]
