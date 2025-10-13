@@ -30,6 +30,8 @@ jobs:
             "container_name": "website-pr-container",
             "dockerfile": "./Website/Dockerfile",
             "container_port": "8080",
-            "isFramework": "false"
+            "isFramework": "false",
+            "is_api": "true",
+            "api_doc_path": "/swagger/v1/swagger.json"
           }
         ]
