@@ -7,8 +7,7 @@ on:
   repository_dispatch:
     types: [run-pr-template]
      
-  workflow_dispatch:
-#dsasdsadasdsadsa
+#ds
 permissions:
   actions: write
   contents: write
