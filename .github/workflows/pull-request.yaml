@@ -16,6 +16,12 @@ permissions:
   issues: write
 ##saadas
 jobs:
+  test-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - run: echo "✅ Workflow started by repository_dispatch event!"
+
   run-pipeline:
     uses: PruebaActions/WorkFlows-Templates/.github/workflows/pr-dotnet-codeql-final.yaml@main
     with:
