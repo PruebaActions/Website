@@ -43,7 +43,7 @@ jobs:
   dispatch-back:
     runs-on:
       group: DAST
-    needs: run-template
+    needs: run-pipeline
     if: github.event_name == 'pull_request'  # solo cuando el PR se origina aquí
     steps:
       - name: Trigger UVC.Websites pull-request workflow
