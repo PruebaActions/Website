@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 #dsasdsad
 permissions:
-  actions: read
-  contents: read
+  actions: write
+  contents: write
   security-events: write
   issues: write
 ##saadas
