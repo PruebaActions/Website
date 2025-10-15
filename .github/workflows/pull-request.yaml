@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: 
       - master
+  repository_dispatch:
+    types: [run-pr-template]
+     
   workflow_dispatch:
 #dsasdsad
 permissions:
@@ -35,3 +38,24 @@ jobs:
             "api_doc_path": "/swagger/v1/swagger.json"
           }
         ]
+
+  # Disparar workflow en UVC.Websites
+  dispatch-back:
+    runs-on:
+      group: DAST
+    needs: run-template
+    if: github.event_name == 'pull_request'  # solo cuando el PR se origina aquí
+    steps:
+      - name: Trigger UVC.Websites pull-request workflow
+        uses: PruebaActions/WorkFlows-Templates/.github/actions/dispatch@main
+        with:
+          token: ${{ secrets.REPO_TOKEN }}
+          repository: PruebaActions/UVC.Websites
+          event_type: run-pr-template
+          client-payload: |
+            {
+              "source_repo": "${{ github.repository }}",
+              "sha": "${{ github.sha }}",
+              "pr_number": "${{ github.event.pull_request.number }}",
+              "branch": "${{ github.head_ref }}"
+            }
