@@ -1,0 +1,67 @@
+name: CI - Multi Project Pipeline
+
+on:
+  pull_request:
+    branches: 
+      - master
+  repository_dispatch:
+    types: [run-pr-template]
+     
+  workflow_dispatch:
+#dsasdsadasdsadsa
+permissions:
+  actions: write
+  contents: write
+  security-events: write
+  issues: write
+##saadas
+jobs:
+  test-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - run: echo "✅ Workflow started by repository_dispatch event!"
+
+  run-pipeline:
+    uses: PruebaActions/WorkFlows-Templates/.github/workflows/pr-dotnet-codeql-final.yaml@main
+    with:
+      codeql_language: "csharp"
+      has_tests: false
+      project_paths: |
+        [
+          { "path": "./Website.sln", "isFramework": "false" }
+        ]
+
+      docker_targets: |
+        [
+          {
+            "image_name": "website-pr",
+            "container_name": "website-pr-container",
+            "dockerfile": "./Website/Dockerfile",
+            "container_port": "8080",
+            "isFramework": "false",
+            "is_api": "true",
+            "api_doc_path": "/swagger/v1/swagger.json"
+          }
+        ]
+
+  # Disparar workflow en UVC.Websites
+  dispatch-back:
+    runs-on:
+      group: DAST
+    needs: run-pipeline
+    if: github.event_name == 'pull_request'  # solo cuando el PR se origina aquí
+    steps:
+      - name: Trigger UVC.Websites pull-request workflow
+        uses: PruebaActions/WorkFlows-Templates/.github/actions/dispatch@main
+        with:
+          token: ${{ secrets.REPO_TOKEN }}
+          repository: PruebaActions/UVC.Websites
+          event_type: run-pr-template
+          client-payload: |
+            {
+              "source_repo": "${{ github.repository }}",
+              "sha": "${{ github.sha }}",
+              "pr_number": "${{ github.event.pull_request.number }}",
+              "branch": "${{ github.head_ref }}"
+            }
