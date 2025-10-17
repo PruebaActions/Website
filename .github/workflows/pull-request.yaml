@@ -4,8 +4,6 @@ on:
   pull_request:
     branches: 
       - master
-  repository_dispatch:
-    types: [run-pr-template]
      
 #ds
 permissions:
